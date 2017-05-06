@@ -20,18 +20,35 @@ var ds = new DataSource(connector, {
 });
 
 var Todo = ds.define('Todo', {
-  content: {type: String}
+  content: { type: String }
 });
 
 var suite = new Benchmark.Suite;
+var uniqVal = 0;
+
+function resetTestState() {
+  uniqVal = 0;
+  Todo.destroyAll();
+}
 
 suite
   .add('create', {
     defer: true,
-    fn: function(deferred) {
-      Todo.create({content: 'Buy eggs, ' + (uniqVal++)}, function() {
+    fn: function (deferred) {
+      Todo.create({ content: 'Buy eggs, ' + (uniqVal++) }, function (e) {
+        if (e) {
+          process.exit(1);
+        }
         deferred.resolve();
       });
     },
     onComplete: resetTestState
-});
+  })
+  .on('cycle', function (event) {
+    console.log('- ' + String(event.target));
+  })
+  .on('complete', function () {
+    Todo.destroyAll();
+    process.exit();
+  })
+  .run({ async: true });
