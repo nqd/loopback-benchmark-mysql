@@ -1,0 +1,16 @@
+readonly curdir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+logfile=$curdir/results.md
+start=$(date +%s)
+echo 'benchmarking...'
+echo "# $(date)" >> $logfile
+echo >> $logfile
+echo '## loopback-connector-mysql' >> $logfile
+node loopback-connector-mysql >> $logfile
+echo '25% done'
+echo >> $logfile
+echo "# Took" >> $logfile
+echo $took >> $logfile
+echo >> $logfile
+echo '---' >> $logfile
+echo >> $logfile
+echo "Took $took"
