@@ -18,8 +18,6 @@ var connection = mysql.createConnection({
   password: password,
 });
 
-var suite = new Benchmark.Suite;
-
 connection.connect(function (err) {
   if (err) {
     console.error('error connecting: ' + err.stack);
@@ -27,20 +25,43 @@ connection.connect(function (err) {
   }
 
   console.log(`connected as id ${connection.threadId}`);
+
+  var suite = new Benchmark.Suite;
+  var uniqVal = 0;
+
+  function resetTestState() {
+    uniqVal = 0;
+    // connection.query('truncate Todo', (e, _results, _fields) => {
+    //   if (e) {
+    //     console.log(e);
+    //     process.exit(1);
+    //   }
+    // });
+  }
+
   suite
     .add('create', {
       defer: true,
       fn: function (deferred) {
-        Todo.create({
-          content: 'Buy eggs, ' + (uniqVal++)
-        }, function (e) {
-          if (e) {
-            console.log(e);
-            process.exit(1);
-          }
-          deferred.resolve();
-        });
+        connection.query(
+          'INSERT INTO ?? SET ?',
+          ['Todo', { content: 'Buy eggs ' + uniqVal++ }],
+          function (e, _results) {
+            if (e) {
+              console.log(e);
+              process.exit(1);
+            }
+            deferred.resolve();
+          });
       },
       onComplete: resetTestState
-    });
+    })
+    .on('cycle', function (event) {
+      console.log('- ' + String(event.target));
+    })
+    .on('complete', function () {
+      connection.end();
+      process.exit();
+    })
+    .run({ async: true });
 });
