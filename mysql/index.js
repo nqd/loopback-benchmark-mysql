@@ -31,28 +31,34 @@ connection.connect(function (err) {
 
   function resetTestState() {
     uniqVal = 0;
-    // connection.query('truncate Todo', (e, _results, _fields) => {
-    //   if (e) {
-    //     console.log(e);
-    //     process.exit(1);
-    //   }
-    // });
+    connection.query('truncate Todo', (e, _results, _fields) => {
+      if (e) {
+        console.log(e);
+        process.exit(1);
+      }
+    });
+  }
+
+  function insertTodo(cb) {
+    connection.query(
+      'INSERT INTO ?? SET ?',
+      ['Todo', { content: 'Buy eggs ' + uniqVal++ }],
+      function (e, _results) {
+        cb(e);
+      });
   }
 
   suite
     .add('create', {
       defer: true,
       fn: function (deferred) {
-        connection.query(
-          'INSERT INTO ?? SET ?',
-          ['Todo', { content: 'Buy eggs ' + uniqVal++ }],
-          function (e, _results) {
-            if (e) {
-              console.log(e);
-              process.exit(1);
-            }
-            deferred.resolve();
-          });
+        insertTodo(e => {
+          if (e) {
+            console.log(e);
+            process.exit(1);
+          }
+          deferred.resolve();
+        });
       },
       onComplete: resetTestState
     })
