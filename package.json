@@ -1,0 +1,16 @@
+{
+  "name": "loopback-benchmark-mysql",
+  "version": "1.0.0",
+  "description": "Loopback benchmark for MySQL",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dinh Nguyen <dinh.nguyen@veriksystems.com>",
+  "license": "ISC",
+  "dependencies": {
+    "benchmark": "^2.1.4",
+    "loopback-connector-mysql": "^4.1.0",
+    "loopback-datasource-juggler": "^3.6.1"
+  }
+}
