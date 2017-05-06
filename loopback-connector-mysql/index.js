@@ -35,12 +35,55 @@ suite
   .add('create', {
     defer: true,
     fn: function (deferred) {
-      Todo.create({ content: 'Buy eggs, ' + (uniqVal++) }, function (e) {
+      Todo.create({
+        content: 'Buy eggs, ' + (uniqVal++)
+      }, function (e) {
         if (e) {
+          console.log(e);
           process.exit(1);
         }
         deferred.resolve();
       });
+    },
+    onComplete: resetTestState
+  })
+  .add('find', {
+    defer: true,
+    fn: function (deferred) {
+      Todo.find(function (e) {
+        if (e) {
+          console.log(e);
+          process.exit(1);
+        }
+        deferred.resolve();
+      });
+    },
+    onStart: function () {
+      Todo.create([
+        { content: 'Buy eggs' },
+        { content: 'Buy milk' },
+        { content: 'Buy cheese' }
+      ]);
+    },
+    onComplete: resetTestState
+  })
+  .add('find with a simple filter', {
+    defer: true,
+    fn: function (deferred) {
+      Todo.find({ where: { content: 'Buy milk' } }, function (e) {
+        if (e) {
+          console.log(e);
+          process.exit(1);
+        }
+        deferred.resolve();
+      });
+    },
+    onStart: function () {
+      Todo.create([
+        { content: 'Buy eggs' },
+        { content: 'Buy milk' },
+        { content: 'Buy cheese' }
+      ]);
     },
     onComplete: resetTestState
   })
