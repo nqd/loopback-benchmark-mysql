@@ -48,10 +48,6 @@ connection.connect(function (err) {
       });
   }
 
-  function findTodo(cb) {
-    cb();
-  }
-
   suite
     .add('create', {
       defer: true,
@@ -69,7 +65,7 @@ connection.connect(function (err) {
     .add('find', {
       defer: true,
       fn: function (deferred) {
-        findTodo(e => {
+        connection.query('SELECT * FROM Todo', (e, _results) => {
           if (e) {
             console.log(e);
             process.exit(1);
