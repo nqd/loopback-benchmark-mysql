@@ -1,3 +1,6 @@
+# loopback-benchmark-mysql
+
+Inspiring from [loopback-benchmark-mysql](https://github.com/strongloop-community/loopback-benchmark-mongodb).
 
 ## setup mysql
 ```
