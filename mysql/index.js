@@ -24,8 +24,6 @@ connection.connect(function (err) {
     process.exit(1);
   }
 
-  console.log(`connected as id ${connection.threadId}`);
-
   var suite = new Benchmark.Suite;
   var uniqVal = 0;
 
