@@ -87,6 +87,31 @@ connection.connect(function (err) {
       },
       onComplete: resetTestState
     })
+    .add('find with simple filter', {
+      defer: true,
+      fn: function (deferred) {
+        connection.query('SELECT * FROM Todo WHERE `content` = "Buy milk"', (e, _results) => {
+          if (e) {
+            console.log(e);
+            process.exit(1);
+          }
+          deferred.resolve();
+        });
+      },
+      onStart: function () {
+        const contents = [['Buy eggs'], ['Buy milk'], ['Buy cheese']];
+        connection.query(
+          'INSERT INTO ?? (content) VALUES ?',
+          ['Todo', contents],
+          function (e, _results) {
+            if (e) {
+              console.log(e);
+              process.exit(1);
+            }
+          });
+      },
+      onComplete: resetTestState
+    })
     .on('cycle', function (event) {
       console.log('- ' + String(event.target));
     })
