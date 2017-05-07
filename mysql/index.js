@@ -48,6 +48,10 @@ connection.connect(function (err) {
       });
   }
 
+  function findTodo(cb) {
+    cb();
+  }
+
   suite
     .add('create', {
       defer: true,
@@ -59,6 +63,31 @@ connection.connect(function (err) {
           }
           deferred.resolve();
         });
+      },
+      onComplete: resetTestState
+    })
+    .add('find', {
+      defer: true,
+      fn: function (deferred) {
+        findTodo(e => {
+          if (e) {
+            console.log(e);
+            process.exit(1);
+          }
+          deferred.resolve();
+        });
+      },
+      onStart: function () {
+        const contents = [['Buy eggs'], ['Buy milk'], ['Buy cheese']];
+        connection.query(
+          'INSERT INTO ?? (content) VALUES ?',
+          ['Todo', contents],
+          function (e, _results) {
+            if (e) {
+              console.log(e);
+              process.exit(1);
+            }
+          });
       },
       onComplete: resetTestState
     })
