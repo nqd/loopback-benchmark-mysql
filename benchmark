@@ -6,12 +6,12 @@ echo "# $(date)" >> $logfile
 echo >> $logfile
 
 echo '## loopback-connector-mysql' >> $logfile
-node loopback-connector-mysql >> $logfile
+node loopback-connector-mysql/todo.js >> $logfile
 echo '25% done'
 echo >> $logfile
 
 echo '## mysql' >> $logfile
-node mysql >> $logfile
+node mysql/todo.js >> $logfile
 echo '25% done'
 echo >> $logfile
 
