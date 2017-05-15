@@ -67,25 +67,67 @@ function checkError(e) {
   }
 };
 
-function resetTestState() {
-  Physician.destroyAll();
+function resetTestState(cb) {
+  Physician.destroyAll(cb);
 }
 
 ds.automigrate(err => {
   checkError(err);
 
   suite
-    .add('create', {
+    // .add('create', {
+    //   defer: true,
+    //   fn: function (deferred) {
+    //     Physician.create([
+    //       { name: 'Smith' },
+    //       { name: 'Johnson' },
+    //       { name: 'Williams' },
+    //       { name: 'Jones' },
+    //     ], function (e) {
+    //       checkError(e);
+    //       deferred.resolve();
+    //     });
+    //   },
+    //   onComplete: resetTestState
+    // })
+    .add('find', {
       defer: true,
       fn: function (deferred) {
+        deferred.resolve();
+      },
+      onStart: function () {
         Physician.create([
           { name: 'Smith' },
           { name: 'Johnson' },
           { name: 'Williams' },
           { name: 'Jones' },
-        ], function (e) {
+        ], (e, physicians) => {
           checkError(e);
-          deferred.resolve();
+          console.log(physicians);
+          Patient.create([
+            { name: 'Anderson' },
+            { name: 'Jackson' },
+            { name: 'White' },
+            { name: 'Roberts' },
+            { name: 'Lewis' },
+            { name: 'Clark' },
+            { name: 'Morgan' },
+          ], (e, patients) => {
+            console.log(patients);
+            checkError(e);
+            Appointment.create([
+              { physician_id: physicians[0].id, patient_id: patients[0].id },
+              { physician_id: physicians[0].id, patient_id: patients[2].id },
+              { physician_id: physicians[0].id, patient_id: patients[4].id },
+              { physician_id: physicians[1].id, patient_id: patients[1].id },
+              { physician_id: physicians[1].id, patient_id: patients[3].id },
+              { physician_id: physicians[2].id, patient_id: patients[6].id },
+              { physician_id: physicians[1].id, patient_id: patients[1].id }
+            ], (e, appointments) => {
+              console.log(appointments);
+              checkError(e);
+            });
+          });
         });
       },
       onComplete: resetTestState
@@ -94,9 +136,9 @@ ds.automigrate(err => {
       console.log('- ' + String(event.target));
     })
     .on('complete', function () {
-      Appointment.destroyAll();
-      Physician.destroyAll();
-      Patient.destroyAll();
+      // Appointment.destroyAll();
+      // Physician.destroyAll();
+      // Patient.destroyAll();
       process.exit();
     })
     .run({ async: true });

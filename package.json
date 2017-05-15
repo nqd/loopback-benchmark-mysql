@@ -9,6 +9,7 @@
   "author": "Dinh Nguyen <dinh.nguyen@veriksystems.com>",
   "license": "ISC",
   "dependencies": {
+    "async": "^2.4.0",
     "benchmark": "^2.1.4",
     "loopback-connector-mysql": "^4.1.0",
     "loopback-datasource-juggler": "^3.6.1",
